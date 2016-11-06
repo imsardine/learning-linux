@@ -1,0 +1,37 @@
+= Summary
+
+ * link:README.adoc[前言]
+ * link:tools/README.adoc[工具集]
+   ** link:tools/dmesg.adoc[`dmesg`]
+   ** link:tools/lsusb.adoc[`lsusb`]
+
+////
+TBD:
+
+ * `dmesg` 的輸出也同時寫在 `/var/log/dmesg`? 但為什麼開完機在 Debian 上看是 "(Nothing has been logged yet.)" 返倒是 `/var/log/syslog` 的內容比較多 ... 原來還是得看 syslog daemon 的設定 (Debian 跟 Ubuntu 都已經採用 rsyslog`) 在 Ubuntu 16.04 LTS 上是 `/etc/rsyslog.d/50-default.conf`，裡面設定將 `kern.*` 寫到 `var/log/kern.log`，再搭配 `/etc/logrotate.d/rsyslog` 裡的設定，將 `/var/log/kern.log` 歸檔 => dmesg 沒法搭配 tail，所以 `sudo tail -F /var/log/kern.log | grep -i usb` 可以用來監測特定的訊息，而 `/var/log/dmesg` 大部份的說法都是開機完成那一刻 kernel ring buffer 的內容，不過現在好像沒有了?
+ * Ubuntu 的 sudo 怎麼加? => 按 `/etc/sudoers` 的設定，使用者加入 `sudo` 這個 group 就可以；用 `sudo usermod -a -G sudo <USERNAME>` 即可。
+ * System-wide 的環境變數主要放 `/etc/environment`，每一行都是 `<KEY>=<VALUE>` (不支援 variable expansion)，例如 `JAVA_HOME` 很適合定義在這裡。
+
+Questions：
+
+ * 串接多個指令時，`&&` 跟 `;` 有什麼不同??
+ * 若是接上認不得的 USB 裝置，`lsusb` 會怎麼表示??
+ * 如果混雜著 USB 1.1, 2.0 跟 3.0 port，要怎麼知道哪個 port 是屬於 USB ?.? ??
+ * kernel 的 module 一定跟 hardware 有關嗎??
+ * 似乎有必要瞭解開機、kernel、(kernel) module、run level 等??
+ * 什麼是 file descriptor??
+ * dmesg 的訊息要怎麼看?? 前面像 `[2837356.505125]` 這樣的數字代表?? 但 `dmesg` 是有 [0.000000] 開始的內容，感覺像是開機過的秒數?? 如果是怎麼換算成看得懂的時間??
+ * dmesg 跟 syslog 的關係是什麼? kernel message 是同時寫到 kernel 內部的 ring buffer 跟 syslog 嗎?? 至少從 Ubuntu 上觀察到的，dmesg 的內容也會出現在 `/var/log/kern.log`
+ * 怎麼做使用者管理，好像每個 dist 都不同，但有些概念還是互通的??
+ * make file 怎麼用? 雖然古老，但感覺還是很多人在用?? 不用安裝是它的優點；CMake 用來取代它?
+ * Man page 的 session 要怎麼分??
+ * File system 的結構，什麼東西該擺在哪裡??
+ * Man page 跟 info 有什麼不同??
+ * 怎麼查詢目前安裝的版本?? 只能用 `lsb_release -a` 嗎?
+ * Mac 無法遠端桌面連線到 Ubuntu?? 覺得把 GNOME 的 require-encryption 關閉不是正解，或許 Mac 上可以裝什麼支援 encryption 的 viewer??
+ * GNOME 跟 X11 的關係是什麼?? 不用 GNOME 會影響到什麼嗎??
+ * 沒有 Ubuntu 怎麼製作開機 USB 碟 => UNetbootin USB installer
+ * 中文輸入法??
+ * 自行安裝的程式，大家要共用 (通常在 server 上)，建議放在哪?? `/opt`?
+////
+

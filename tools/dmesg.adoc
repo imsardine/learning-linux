@@ -1,0 +1,42 @@
+= `dmesg`
+
+開機時，kernel 被載入記憶體，接著 module/driver 開始驅動硬體，過程中會輸出大量的訊息 (message)；開機完成後，kernel 偶爾也會產生一些有助於診斷問題 (diagnostic) 的 message，例如 I/O 發生問題、USB 裝置熱插拔時。
+
+這些 message 都會被寫入 kernel 內部的 ring buffer (由於 buffer 的大小固定，所以舊的 message 就會被新的 message 推擠掉)，`dmesg` 則可以用來查看目前 kernel ring buffer 的內容：
+
+----
+dmesg [-H]
+----
+
+其中 `-H` (`--human`) 會以比較容易閱讀 (human-readable) 的方式顯示，最主要是用 local time 顯示時間。例如：
+
+----
+$ dmesg
+[    0.000000] Initializing cgroup subsys cpuset
+[    0.000000] Initializing cgroup subsys cpu
+...
+[   10.834575] ppdev: user-space parallel port driver
+[   11.050179] Adding 1048572k swap on /dev/mapper/ubuntu--server--1604lts--vg-swap_1.  Priority:-1 extents:1 across:1048572k FS
+...
+
+$ dmesg -H
+[Nov 6 13:42] Initializing cgroup subsys cpuset
+[  +0.000000] Initializing cgroup subsys cpu
+...
+[Nov 6 13:43] ppdev: user-space parallel port driver
+[  +0.215604] Adding 1048572k swap on /dev/mapper/ubuntu--server--1604lts--vg-swap_1.  Priority:-1 extents:1 across:1048572k FS
+...
+----
+
+通常會搭配 `grep` 過濾特定的 kernel message，例如要找 USB 相關的問題，可以用：
+
+----
+dmesg [-H] | grep -i usb
+----
+
+由於 ring buffer 本身不是個 log file，無法用 `tail` 持續觀察它的變化，不過 `dmesg` 自己提供了 `-w` (`--follow`) 可以達到相同的效果：(Kernel 3.5.0 之後才有的功能)
+
+----
+dmesg [-H] -w
+----
+
